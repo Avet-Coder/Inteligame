@@ -193,8 +193,15 @@ fun Gaming(
                 ) {
 
                 }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "okay")
+                Button(
+                    onClick = { /*TODO*/ },
+                    Modifier
+                        .width(150.dp)
+                        .padding(12.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColour)
+                ) {
+
                 }
             }
 
