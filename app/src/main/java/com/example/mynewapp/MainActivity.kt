@@ -16,12 +16,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Dao
+import androidx.room.Room
 import com.example.mynewapp.UIDesign.Navigation
+import com.example.mynewapp.db.GameAccessDao
+import com.example.mynewapp.db.GamingDatabase
+import com.example.mynewapp.db.Repo
+import com.example.mynewapp.gameViewModel.GameViewModel
 import com.example.mynewapp.ui.theme.MyNewAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = Room.databaseBuilder(
+            context = applicationContext,
+            klass = GamingDatabase::class.java,
+            name = "gamingDatabase.db"
+        ).build()
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
