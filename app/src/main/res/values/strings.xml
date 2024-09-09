@@ -2,6 +2,7 @@
     <string name="app_name">MyNewApp</string>
     <string name="start_page">Սկսեցինք</string>
     <string name="submit">Submit</string>
+    <string name="submit_db">Save to</string>
     <string name="choose_tip">Choose Game Tip</string>
     <string name="gaming_start">ՃԻՇՏ ՊԱՏԱՍԽԱՆԻՐ\nՀԱՐՑԻՆ</string>
     <string name="total_score">ՁԵՐ ՄԻԱՎՈՐՆԵՐԸ</string>
@@ -10,4 +11,5 @@
     <string name="congratulation">ՁԵՐ ՊԱՏԱՍԽԱՆԸ ՃԻՇՏ Է </string>
     <string name="sorry_not_today">ՁԵՐ ՊԱՏԱՍԽԱՆԸ ՍԽԱԼ Է</string>
     <string name="retry">ՓՈՐՁԵՔ ԿՐԿԻՆ</string>
+    <string name="runAsAdmin">ՄՈՒՏՔ ԳՈՐԾԵԼ ՈՐՊԵՍ ԱԴՄԻՆ</string>
 </resources>

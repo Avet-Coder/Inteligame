@@ -21,6 +21,9 @@ fun Navigation(navController: NavHostController, startDest: String, innerPadding
         composable("gaming") {
             Gaming(innerPadding = innerPadding, navController = navController)
         }
+        composable("quizAdd") {
+            QuizAdd(innerPadding = innerPadding, navController = navController)
+        }
 
     }
 
