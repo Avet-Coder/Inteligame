@@ -48,22 +48,32 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mynewapp.R
+import com.example.mynewapp.db.GamingDatabase
+import com.example.mynewapp.db.Quiz
 import com.example.mynewapp.ui.theme.ElectricBlue
 import com.example.mynewapp.ui.theme.GreenedWhite
 import com.example.mynewapp.ui.theme.GreeninGrey
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun Registration(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
-    navController: NavHostController
+    navController: NavHostController,
+    database: GamingDatabase
 ) {
-    val data = listOf("lion", "panter", "wolf", "tiger", "cat", "dog", "elephant")
+    var data by remember {
+        mutableStateOf(listOf<String>())
+    }
     var nameText by remember {
         mutableStateOf("")
     }
     var nickText by remember {
         mutableStateOf("")
+    }
+    runBlocking {
+        data = database.dao.getAllQuizArea().toSet().toList()
+
     }
     Scaffold(
         modifier = Modifier
@@ -185,16 +195,16 @@ fun Registration(
     }
 }
 
-@Preview
-@Composable
-private fun RegistrationPrev() {
-    val navController = rememberNavController()
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .size(24.dp)
-    ) { innerPadding ->
-        Registration(innerPadding = innerPadding, navController = navController)
-    }
-}
+//@Preview
+//@Composable
+//private fun RegistrationPrev() {
+//    val navController = rememberNavController()
+//    Scaffold(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.Black)
+//            .size(24.dp)
+//    ) { innerPadding ->
+//        Registration(innerPadding = innerPadding, navController = navController)
+//    }
+//}

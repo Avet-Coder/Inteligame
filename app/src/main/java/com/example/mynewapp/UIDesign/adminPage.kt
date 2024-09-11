@@ -41,17 +41,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.mynewapp.R
+import com.example.mynewapp.db.GamingDatabase
 import com.example.mynewapp.db.Quiz
-import com.example.mynewapp.gameViewModel.GameViewModel
 import com.example.mynewapp.ui.theme.GreenedWhite
-import com.example.mynewapp.ui.theme.GreeninGrey
+import kotlinx.coroutines.runBlocking
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -59,7 +56,8 @@ fun QuizAdd(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
     navController: NavHostController,
-//    gameViewModel: GameViewModel
+    database: GamingDatabase
+
 ) {
     val data = listOf(
         "area",
@@ -75,12 +73,18 @@ fun QuizAdd(
         "answer7",
         "answer8"
     )
-    var nameText by remember {
-        mutableStateOf("")
-    }
-    var itemList by remember {
-        mutableStateOf(mutableListOf<String>())
-    }
+    var area by remember { mutableStateOf("") }
+    var question by remember { mutableStateOf("") }
+    var score by remember { mutableStateOf("") }
+    var correctAnswer by remember { mutableStateOf("") }
+    var answer1 by remember { mutableStateOf("") }
+    var answer2 by remember { mutableStateOf("") }
+    var answer3 by remember { mutableStateOf("") }
+    var answer4 by remember { mutableStateOf("") }
+    var answer5 by remember { mutableStateOf("") }
+    var answer6 by remember { mutableStateOf("") }
+    var answer7 by remember { mutableStateOf("") }
+    var answer8 by remember { mutableStateOf("") }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -124,33 +128,123 @@ fun QuizAdd(
                         .clip(CircleShape)
                 )
             }
-            for( i in 0..11) {
-                Spacer(modifier = Modifier.padding(4.dp))
-                OutlinedTextField(
-                    value = nameText,
-                    onValueChange = { itemList.add(it) },
-                    singleLine = true,
-                    label = { Text(text = data[i]) },
-                    placeholder = { Text(text = data[i].uppercase()) }
-                )
-            }
+
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = area,
+                onValueChange = { area = it },
+                singleLine = true,
+                label = { Text(text = data[0]) },
+                placeholder = { Text(text = data[0].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = question,
+                onValueChange = { question = it },
+                singleLine = true,
+                label = { Text(text = data[1]) },
+                placeholder = { Text(text = data[1].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = score,
+                onValueChange = { score = it },
+                singleLine = true,
+                label = { Text(text = data[2]) },
+                placeholder = { Text(text = data[2].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = correctAnswer,
+                onValueChange = { correctAnswer = it },
+                singleLine = true,
+                label = { Text(text = data[3]) },
+                placeholder = { Text(text = data[3].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer1,
+                onValueChange = { answer1 = it },
+                singleLine = true,
+                label = { Text(text = data[4]) },
+                placeholder = { Text(text = data[4].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer2,
+                onValueChange = { answer2 = it },
+                singleLine = true,
+                label = { Text(text = data[5]) },
+                placeholder = { Text(text = data[5].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer3,
+                onValueChange = { answer3 = it },
+                singleLine = true,
+                label = { Text(text = data[6]) },
+                placeholder = { Text(text = data[6].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer4,
+                onValueChange = { answer4 = it },
+                singleLine = true,
+                label = { Text(text = data[7]) },
+                placeholder = { Text(text = data[7].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer5,
+                onValueChange = { answer5 = it },
+                singleLine = true,
+                label = { Text(text = data[8]) },
+                placeholder = { Text(text = data[8].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer6,
+                onValueChange = { answer6 = it },
+                singleLine = true,
+                label = { Text(text = data[9]) },
+                placeholder = { Text(text = data[9].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer7,
+                onValueChange = { answer7 = it },
+                singleLine = true,
+                label = { Text(text = data[10]) },
+                placeholder = { Text(text = data[10].uppercase()) }
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            OutlinedTextField(
+                value = answer8,
+                onValueChange = { answer8 = it },
+                singleLine = true,
+                label = { Text(text = data[11]) },
+                placeholder = { Text(text = data[11].uppercase()) }
+            )
             Spacer(modifier = Modifier.padding(32.dp))
             Button(
                 onClick = {
-//                    val newQuiz = Quiz(
-//                     area =,
-//                     question =,
-//                     score =,
-//                     correctAnswer =,
-//                     answer1 =,
-//                     answer2 =,
-//                     answer3 =,
-//                     answer4 =,
-//                     answer5 =,
-//                     answer6 =,
-//                     answer7 =,
-//                     answer8 =,
-//                    )
+                    val newQuiz = Quiz(
+                        area = area,
+                        question = question,
+                        score = score.toInt(),
+                        correctAnswer = correctAnswer,
+                        answer1 = answer1,
+                        answer2 = answer2,
+                        answer3 = answer3,
+                        answer4 = answer4,
+                        answer5 = answer5,
+                        answer6 = answer6,
+                        answer7 = answer7,
+                        answer8 = answer8,
+                    )
+                    runBlocking {
+                        database.dao.insertNewQuiz(newQuiz)
+                    }
                 }, modifier = Modifier
                     .width(196.dp)
                     .height(48.dp)
@@ -159,21 +253,22 @@ fun QuizAdd(
 
             }
 
+
         }
     }
 
 }
-
-@Preview
-@Composable
-private fun QuizAddPreview() {
-    val navController = rememberNavController()
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .size(24.dp)
-    ) { innerPadding ->
-        QuizAdd(innerPadding = innerPadding, navController = navController)
-    }
-}
+//
+//@Preview
+//@Composable
+//private fun QuizAddPreview() {
+//    val navController = rememberNavController()
+//    Scaffold(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.Black)
+//            .size(24.dp)
+//    ) { innerPadding ->
+//        QuizAdd(innerPadding = innerPadding, navController = navController)
+//    }
+//}

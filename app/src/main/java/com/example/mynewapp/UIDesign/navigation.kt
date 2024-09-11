@@ -7,22 +7,32 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mynewapp.db.GamingDatabase
 import java.security.AccessController
 
 @Composable
-fun Navigation(navController: NavHostController, startDest: String, innerPadding: PaddingValues) {
+fun Navigation(
+    navController: NavHostController,
+    startDest: String,
+    innerPadding: PaddingValues,
+    database: GamingDatabase
+) {
     NavHost(navController = navController, startDestination = startDest) {
         composable(startDest) {
-            Starting(innerPadding = innerPadding,navController = navController)
+            Starting(innerPadding = innerPadding, navController = navController)
         }
         composable("register") {
-            Registration(innerPadding = innerPadding, navController = navController)
+            Registration(
+                innerPadding = innerPadding,
+                navController = navController,
+                database = database
+            )
         }
         composable("gaming") {
             Gaming(innerPadding = innerPadding, navController = navController)
         }
         composable("quizAdd") {
-            QuizAdd(innerPadding = innerPadding, navController = navController)
+            QuizAdd(innerPadding = innerPadding, navController = navController, database = database)
         }
 
     }
