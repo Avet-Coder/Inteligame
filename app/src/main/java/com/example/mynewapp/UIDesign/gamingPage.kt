@@ -184,7 +184,7 @@ fun Gaming(
             )
             Row {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {  },
                     Modifier
                         .width(150.dp)
                         .padding(12.dp),
@@ -194,7 +194,7 @@ fun Gaming(
 
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {  },
                     Modifier
                         .width(150.dp)
                         .padding(12.dp),
