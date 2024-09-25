@@ -1,6 +1,8 @@
 package com.example.mynewapp.UIDesign
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -37,25 +39,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.mynewapp.R
+import com.example.mynewapp.db.GamingDatabase
+import com.example.mynewapp.db.Quiz
+import com.example.mynewapp.ui.theme.Answer1
+import com.example.mynewapp.ui.theme.Answer2
+import com.example.mynewapp.ui.theme.Answer3
+import com.example.mynewapp.ui.theme.Answer4
 import com.example.mynewapp.ui.theme.ButtonColour
+import com.example.mynewapp.ui.theme.DarkGreen
 import com.example.mynewapp.ui.theme.GreenedWhite
+import com.example.mynewapp.ui.theme.GreeninGrey
 import com.example.mynewapp.ui.theme.QuestBackColour
 import com.example.mynewapp.ui.theme.ShadowColour
 import com.example.mynewapp.ui.theme.TitleColour
+import kotlinx.coroutines.runBlocking
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun Gaming(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
-    navController: NavHostController
+    navController: NavHostController,
+    database: GamingDatabase
 ) {
     val titleStyle = TextStyle(
         fontSize = 24.sp,
@@ -74,17 +84,33 @@ fun Gaming(
         color = TitleColour,
         fontWeight = FontWeight.Medium
     )
-    val totalScore by remember {
+    var correctAnswer by remember {
+        mutableStateOf("")
+    }
+    var data by remember {
+        mutableStateOf(listOf<String>())
+    }
+    var answerList by remember {
+        mutableStateOf(arrayListOf<String>())
+    }
+    var dataRandom by remember {
+        mutableStateOf(arrayListOf<Quiz>())
+    }
+    var totalScore by remember {
         mutableStateOf(0)
     }
-    val questScore by remember {
+    var questScore by remember {
         mutableStateOf(0)
     }
-    val questText by remember {
+    var questText by remember {
         mutableStateOf("Yerevan is the capital city of ...")
     }
-    val isCorrect by remember {
+    var isCorrect by remember {
         mutableStateOf(0)
+    }
+    runBlocking {
+        data = database.dao.getAllQuizArea().toSet().toList()
+
     }
     Scaffold(
         modifier = Modifier
@@ -122,7 +148,7 @@ fun Gaming(
             Row(
                 Modifier
                     .fillMaxWidth(0.9f)
-                    .padding(top = 16.dp),
+                    .padding(top = 4.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
@@ -135,7 +161,7 @@ fun Gaming(
             Row(
                 Modifier
                     .fillMaxWidth(0.9f)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 4.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
@@ -144,6 +170,69 @@ fun Gaming(
                     modifier = Modifier.padding(end = 12.dp)
                 )
                 Text(text = questScore.toString(), style = smallTextStyle)
+            }
+
+            Text(
+                text = stringResource(id = R.string.choose_tip),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+
+
+                LazyColumn(
+                    modifier = Modifier
+                        .height(72.dp)
+                        .background(GreeninGrey)
+                        .border(
+                            border = ButtonDefaults.outlinedButtonBorder,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(horizontal = 12.dp)
+                ) {
+                    items(data.size) {
+                        Text(
+                            text = data[it],
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 24.dp)
+                                .clickable {
+                                    runBlocking {
+                                        dataRandom += database.dao
+                                            .getAllAreaQuiz(data[it])
+                                            .random()
+                                    }
+                                    questText = dataRandom[0].question
+                                    questScore = dataRandom[0].score
+                                    correctAnswer = dataRandom[0].correctAnswer
+                                    answerList += correctAnswer
+                                    val index = listOf(
+                                        dataRandom[0].answer1,
+                                        dataRandom[0].answer2,
+                                        dataRandom[0].answer3,
+                                        dataRandom[0].answer4,
+                                        dataRandom[0].answer5,
+                                        dataRandom[0].answer6,
+                                        dataRandom[0].answer7,
+                                        dataRandom[0].answer8
+                                    )
+                                    answerList += index.random()
+                                    answerList += index.random()
+                                    answerList += index.random()
+                                    answerList.shuffle()
+                                    dataRandom.clear()
+                                },
+                            lineHeight = 0.3.em,
+                            letterSpacing = 0.15.em
+                        )
+                    }
+                }
             }
             Text(
                 text = stringResource(id = R.string.right_answer),
@@ -159,7 +248,7 @@ fun Gaming(
                     text = questText,
                     style = textStyle,
                     modifier = Modifier
-                        .height(160.dp)
+                        .height(100.dp)
                         .fillMaxWidth(0.95f)
                         .background(QuestBackColour)
                         .clip(RoundedCornerShape(size = 8.dp))
@@ -169,6 +258,82 @@ fun Gaming(
                         )
                 )
             }
+            Text(
+                text = if (answerList.isEmpty()) "" else answerList[0],
+                style = textStyle,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(top = 6.dp)
+                    .height(30.dp)
+                    .background(Answer1)
+                    .clickable {
+                        if (answerList.isNotEmpty() && correctAnswer == answerList[0]) {
+                            totalScore += questScore
+                            isCorrect = 1
+                            answerList.clear()
+                        } else if (answerList.isNotEmpty() && correctAnswer != answerList[0]) {
+                            isCorrect = -1
+                            answerList.clear()
+                        }
+                    }
+            )
+            Text(
+                text = if (answerList.isEmpty()) "" else answerList[1],
+                style = textStyle,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(top = 6.dp)
+                    .height(30.dp)
+                    .background(Answer2)
+                    .clickable {
+                        if (answerList.isNotEmpty() && correctAnswer == answerList[1]) {
+                            totalScore += questScore
+                            isCorrect = 1
+                            answerList.clear()
+                        } else if (answerList.isNotEmpty() && correctAnswer != answerList[1]){
+                            isCorrect = -1
+                            answerList.clear()
+                        }
+                    }
+            )
+            Text(
+                text = if (answerList.isEmpty()) "" else answerList[2],
+                style = textStyle,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(top = 6.dp)
+                    .height(30.dp)
+                    .background(Answer3)
+                    .clickable {
+                        if (answerList.isNotEmpty() && correctAnswer == answerList[2]) {
+                            totalScore += questScore
+                            isCorrect = 1
+                            answerList.clear()
+                        } else if (answerList.isNotEmpty() && correctAnswer != answerList[2]){
+                            isCorrect = -1
+                            answerList.clear()
+                        }
+                    }
+            )
+            Text(
+                text = if (answerList.isEmpty()) "" else answerList[3],
+                style = textStyle,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(top = 6.dp)
+                    .height(30.dp)
+                    .background(Answer4)
+                    .clickable {
+                        if (answerList.isNotEmpty() && correctAnswer == answerList[3]) {
+                            totalScore += questScore
+                            isCorrect = 1
+                            answerList.clear()
+                        } else if (answerList.isNotEmpty() && correctAnswer != answerList[3]){
+                            isCorrect = -1
+                            answerList.clear()
+                        }
+                    }
+            )
             Text(text = "answer", style = textStyle)
             Text(
                 text = when (isCorrect) {
@@ -178,13 +343,13 @@ fun Gaming(
                 }, style = textStyle,
                 color = when (isCorrect) {
                     -1 -> Color.Red
-                    1 -> GreenedWhite
+                    1 -> DarkGreen
                     else -> TitleColour
                 }
             )
             Row {
                 Button(
-                    onClick = {  },
+                    onClick = { },
                     Modifier
                         .width(150.dp)
                         .padding(12.dp),
@@ -194,7 +359,7 @@ fun Gaming(
 
                 }
                 Button(
-                    onClick = {  },
+                    onClick = { },
                     Modifier
                         .width(150.dp)
                         .padding(12.dp),
@@ -209,16 +374,16 @@ fun Gaming(
     }
 }
 
-@Preview
-@Composable
-private fun GamingPreview() {
-    val navController = rememberNavController()
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .size(24.dp)
-    ) { innerPadding ->
-        Gaming(innerPadding = innerPadding, navController = navController)
-    }
-}
+//@Preview
+//@Composable
+//private fun GamingPreview() {
+//    val navController = rememberNavController()
+//    Scaffold(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.Black)
+//            .size(24.dp)
+//    ) { innerPadding ->
+//        Gaming(innerPadding = innerPadding, navController = navController)
+//    }
+//}

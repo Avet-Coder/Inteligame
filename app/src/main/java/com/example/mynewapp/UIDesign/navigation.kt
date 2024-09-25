@@ -2,14 +2,10 @@ package com.example.mynewapp.UIDesign
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mynewapp.db.GamingDatabase
-import java.security.AccessController
-
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -29,7 +25,7 @@ fun Navigation(
             )
         }
         composable("gaming") {
-            Gaming(innerPadding = innerPadding, navController = navController)
+            Gaming(innerPadding = innerPadding, navController = navController, database = database)
         }
         composable("quizAdd") {
             QuizAdd(innerPadding = innerPadding, navController = navController, database = database)
