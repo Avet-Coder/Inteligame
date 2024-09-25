@@ -90,10 +90,10 @@ fun Gaming(
     var data by remember {
         mutableStateOf(listOf<String>())
     }
-    var answerList by remember {
+    val answerList by remember {
         mutableStateOf(arrayListOf<String>())
     }
-    var dataRandom by remember {
+    val dataRandom by remember {
         mutableStateOf(arrayListOf<Quiz>())
     }
     var totalScore by remember {
