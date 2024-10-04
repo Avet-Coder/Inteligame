@@ -1,11 +1,10 @@
 package com.example.mynewapp.UIDesign
 
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,11 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,21 +34,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mynewapp.R
 import com.example.mynewapp.db.GamingDatabase
-import com.example.mynewapp.ui.theme.ElectricBlue
+import com.example.mynewapp.db.UserTable
 import com.example.mynewapp.ui.theme.GreenedWhite
-import com.example.mynewapp.ui.theme.GreeninGrey
 import kotlinx.coroutines.runBlocking
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Registration(
+fun NewUserRegistration(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
     navController: NavHostController,
@@ -63,13 +57,7 @@ fun Registration(
     var nickText by remember {
         mutableStateOf("")
     }
-    var data by remember {
-        mutableStateOf(listOf<String>())
-    }
-    runBlocking {
-        data = database.dao.getAllUsers()
 
-    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -113,59 +101,47 @@ fun Registration(
                 )
             }
             Spacer(modifier = Modifier.padding(12.dp))
-
-
-            LazyColumn(
-                modifier = Modifier
-                    .height(72.dp)
-                    .padding(horizontal = 24.dp)
-                    .background(GreeninGrey)
-                    .border(
-                        border = ButtonDefaults.outlinedButtonBorder,
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .padding(horizontal = 12.dp)
-            ) {
-                items(data.size) {
-                    Text(
-                        text = data[it],
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(28.dp)
-                            .padding(start = 24.dp)
-                            .clickable {
-
-                                navController.navigate("gaming/${data[it]}")
-
-
-                            }
-                        ,
-                        lineHeight = 0.3.em,
-                        letterSpacing = 0.15.em
-                    )
-                }
-            }
-            Text(
-                text = stringResource(id = R.string.runAsAdmin),
-                modifier = Modifier
-                    .padding(top = 5.dp, end = 12.dp)
-                    .clickable { navController.navigate("quizAdd") }
-                    .fillMaxWidth(), textAlign = TextAlign.End, color = ElectricBlue
+            OutlinedTextField(
+                value = nameText,
+                onValueChange = { nameText = it },
+                singleLine = true,
+                label = { Text(text = "name") },
+                placeholder = { Text(text = "Name") }
             )
-            Spacer(modifier = Modifier.padding(6.dp))
-            Text(
-                text = stringResource(id = R.string.new_user),
-                modifier = Modifier
-                    .padding(top = 5.dp, end = 12.dp)
-                    .clickable { navController.navigate("newUser") }
-                    .fillMaxWidth(), textAlign = TextAlign.End, color = ElectricBlue
+            Spacer(modifier = Modifier.padding(12.dp))
+            OutlinedTextField(
+                value = nickText,
+                onValueChange = { nickText = it },
+                singleLine = true,
+                label = { Text(text = "nickname") },
+                placeholder = { Text(text = "Nickname") }
             )
+
+            Spacer(modifier = Modifier.padding(32.dp))
+
 
 
 
             Spacer(modifier = Modifier.padding(32.dp))
+            Button(
+                onClick = {
+                    val newUser = UserTable(userName = nameText, password = nickText)
+                    runBlocking {
+                        if (nameText.isNotEmpty() && nickText.isNotEmpty()) database.dao.insertNewUser(
+                            newUser
+                        )
+                    }
+                    nameText = ""
+                    nickText = ""
 
+
+                }, modifier = Modifier
+                    .width(196.dp)
+                    .height(48.dp)
+            ) {
+                Text(text = stringResource(id = R.string.submit), fontSize = 18.sp)
+
+            }
 
         }
     }
