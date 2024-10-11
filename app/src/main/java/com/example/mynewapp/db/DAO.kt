@@ -25,4 +25,7 @@ interface GameAccessDao {
 
     @Query("SELECT * FROM UserTable WHERE userName = :name")
     suspend fun getUser(name: String): UserTable
+
+    @Query("DELETE  FROM UserTable WHERE userName = :name")
+    suspend fun deleteUser(name: String)
 }

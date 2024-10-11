@@ -1,5 +1,6 @@
 package com.example.mynewapp.UIDesign
 
+import android.app.AlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -7,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -117,7 +121,7 @@ fun Registration(
 
             LazyColumn(
                 modifier = Modifier
-                    .height(72.dp)
+                    .height(150.dp)
                     .padding(horizontal = 24.dp)
                     .background(GreeninGrey)
                     .border(
@@ -135,12 +139,8 @@ fun Registration(
                             .height(28.dp)
                             .padding(start = 24.dp)
                             .clickable {
-
                                 navController.navigate("gaming/${data[it]}")
-
-
-                            }
-                        ,
+                            },
                         lineHeight = 0.3.em,
                         letterSpacing = 0.15.em
                     )
@@ -166,11 +166,9 @@ fun Registration(
 
             Spacer(modifier = Modifier.padding(32.dp))
 
-
         }
     }
 }
-
 //@Preview
 //@Composable
 //private fun RegistrationPrev() {

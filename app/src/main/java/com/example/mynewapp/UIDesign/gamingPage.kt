@@ -1,6 +1,7 @@
 package com.example.mynewapp.UIDesign
 
 import android.annotation.SuppressLint
+import android.graphics.Paint.Align
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,11 +20,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.room.Delete
 import com.example.mynewapp.R
 import com.example.mynewapp.db.GamingDatabase
 import com.example.mynewapp.db.Quiz
@@ -88,6 +93,9 @@ fun Gaming(
     )
     var correctAnswer by remember {
         mutableStateOf("")
+    }
+    var isDelete by remember {
+        mutableStateOf(false)
     }
     var data by remember {
         mutableStateOf(listOf<String>())
@@ -373,33 +381,68 @@ fun Gaming(
                     else -> TitleColour
                 }
             )
-            Row {
-                Button(
-                    onClick = { },
-                    Modifier
-                        .width(150.dp)
-                        .padding(12.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColour)
-                ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth(0.9f)) {
+                Text(
+                    text = stringResource(id = R.string.delete_user),
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.End,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .height(32.dp)
+                        .clickable {
+                            isDelete = true
+                        }
+                )
+            }
+            if (isDelete) {
+                DeleteDialog(navController=navController,database=database,userName = userName)
 
-                }
-                Button(
-                    onClick = { },
-                    Modifier
-                        .width(150.dp)
-                        .padding(12.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColour)
-                ) {
-
-                }
             }
 
         }
     }
 }
 
+@Composable
+fun DeleteDialog(navController: NavHostController,
+                 database: GamingDatabase,
+                 userName: String? = null
+                 ) {
+    var showDialog by remember {
+        mutableStateOf(true)
+    }
+    if (showDialog){
+    AlertDialog(onDismissRequest = {showDialog = false},
+        dismissButton = {
+        TextButton(onClick = { showDialog = false }) {
+            Text(text = stringResource(id = R.string.delete))
+        }
+    }, confirmButton = {
+        TextButton(onClick = { showDialog = true
+        runBlocking { if (userName != null
+            )database.dao.deleteUser(userName) }
+            navController.navigate("register")
+        }) {
+            Text(text = stringResource(id = R.string.delete))
+        }
+    },
+        icon = {},
+        title = {
+            Text(
+                text = stringResource(id = R.string.alert_title),
+                textAlign = TextAlign.Center, fontSize = 18.sp,modifier = Modifier.fillMaxWidth()
+
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.alert_text),
+                textAlign = TextAlign.Center,modifier = Modifier.fillMaxWidth()
+            )
+        }
+    )
+}}
 //@Preview
 //@Composable
 //private fun GamingPreview() {

@@ -17,11 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -50,14 +53,19 @@ fun NewUserRegistration(
     navController: NavHostController,
     database: GamingDatabase
 ) {
-
+    var data by remember {
+        mutableStateOf(listOf<String>())
+    }
     var nameText by remember {
         mutableStateOf("")
     }
     var nickText by remember {
         mutableStateOf("")
     }
-
+    var isAlert by remember {
+        mutableStateOf(false)
+    }
+    if (isAlert) Alert()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -125,6 +133,14 @@ fun NewUserRegistration(
             Spacer(modifier = Modifier.padding(32.dp))
             Button(
                 onClick = {
+
+                    runBlocking {
+                        data = database.dao.getAllUsers()
+                    }
+                    if (nameText in data){
+isAlert = true
+
+                    }else{isAlert = false
                     val newUser = UserTable(userName = nameText, password = nickText)
                     runBlocking {
                         if (nameText.isNotEmpty() && nickText.isNotEmpty()) database.dao.insertNewUser(
@@ -133,8 +149,8 @@ fun NewUserRegistration(
                     }
                     nameText = ""
                     nickText = ""
-
-
+                    navController.navigate("register")
+                    }
                 }, modifier = Modifier
                     .width(196.dp)
                     .height(48.dp)
@@ -147,6 +163,29 @@ fun NewUserRegistration(
     }
 }
 
+@Composable
+fun Alert(modifier: Modifier = Modifier) {
+    var showDialog by remember {
+        mutableStateOf(true)
+    }
+    if (showDialog){
+    AlertDialog(onDismissRequest = {showDialog = false},
+        dismissButton = {
+        }, confirmButton = {
+            TextButton(onClick = { showDialog = false
+            }) {
+                Text(text = stringResource(id = R.string.okay))
+            }
+        },
+        icon = {},
+        text = {
+            Text(
+                text = stringResource(id = R.string.alert_text_username),
+                textAlign = TextAlign.Center,modifier = Modifier.fillMaxWidth()
+            )
+        }
+    )
+}}
 //@Preview
 //@Composable
 //private fun RegistrationPrev() {
